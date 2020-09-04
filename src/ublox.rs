@@ -213,3 +213,9 @@ impl fmt::Display for Ublox {
         write!(f, "{:02x}{:02x}", self.check_a, self.check_b)
     }
 }
+
+impl fmt::Debug for Ublox {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: {}: {:x?}", self.id(), self.length, self.payload)
+    }
+}
