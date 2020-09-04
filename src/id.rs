@@ -1,8 +1,9 @@
 use num_enum::FromPrimitive;
+use std::fmt;
 
 use crate::Class;
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(u8)]
 pub enum Id {
     NAV(NAV),
@@ -20,6 +21,28 @@ pub enum Id {
     SEC(SEC),
     HNR(HNR),
     Unknown,
+}
+
+impl fmt::Display for Id {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Id::NAV(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::RXM(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::INF(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::ACK(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::CFG(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::UPD(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::MON(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::AID(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::TIM(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::ESF(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::MGA(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::LOG(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::SEC(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::HNR(id) => write!(f, "{:?}-{:?}", Class::from(*self), id),
+            Id::Unknown => write!(f, "{:?}", Class::from(*self)),
+        }
+    }
 }
 
 impl From<Id> for u8 {
@@ -66,7 +89,7 @@ impl From<Id> for Class {
     }
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum ACK {
     NAK = 0x00,
@@ -75,7 +98,7 @@ pub enum ACK {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum AID {
     INI = 0x01,
@@ -87,7 +110,7 @@ pub enum AID {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum CFG {
     PRT = 0x00,
@@ -128,7 +151,7 @@ pub enum CFG {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum ESF {
     MEAS = 0x02,
@@ -139,7 +162,7 @@ pub enum ESF {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum HNR {
     PVT = 0x00,
@@ -148,7 +171,7 @@ pub enum HNR {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum INF {
     ERROR = 0x00,
@@ -160,7 +183,7 @@ pub enum INF {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum LOG {
     ERASE = 0x03,
@@ -178,7 +201,7 @@ pub enum LOG {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum MGA {
     GPS = 0x00,
@@ -195,7 +218,7 @@ pub enum MGA {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum MON {
     IO = 0x02,
@@ -214,7 +237,7 @@ pub enum MON {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum NAV {
     POSECEF = 0x01,
@@ -253,7 +276,7 @@ pub enum NAV {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum RXM {
     SFRBX = 0x13,
@@ -268,7 +291,7 @@ pub enum RXM {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum SEC {
     UNIQID = 0x03,
@@ -276,7 +299,7 @@ pub enum SEC {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum TIM {
     TP = 0x01,
@@ -293,7 +316,7 @@ pub enum TIM {
     Unknown,
 }
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive)]
 #[repr(u8)]
 pub enum UPD {
     SOS = 0x14,

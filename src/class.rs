@@ -1,6 +1,6 @@
 use num_enum::FromPrimitive;
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Debug, Copy, Clone, FromPrimitive)]
 #[repr(u8)]
 pub enum Class {
     NAV = 0x01,
