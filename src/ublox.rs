@@ -5,7 +5,7 @@ use std::num::Wrapping;
 
 use crate::{Class, Error, Id};
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum State {
     Sync1,
     Sync2,
@@ -16,9 +16,16 @@ pub enum State {
     Payload,
     CheckA,
     CheckB,
+    Done,
 }
 
-#[derive(Debug, Default)]
+impl Default for State {
+    fn default() -> Self {
+        Self::Sync1
+    }
+}
+
+#[derive(Default)]
 pub struct Ublox {
     pub sync_1: u8,
     pub sync_2: u8,
@@ -110,87 +117,95 @@ impl Ublox {
         }
     }
 
-    pub fn from_reader<R: Read>(mut reader: R) -> Result<Self, Error> {
-        let mut state = State::Sync1;
-        let mut ublox = Self::default();
-        let mut buf = [0; 1];
+    fn parse_one(&mut self, mut state: State, c: u8) -> Result<State, Error> {
+        trace!("state: {:?}, byte: {:x}", state, c);
 
-        loop {
-            let c = match reader.read_exact(&mut buf) {
-                Ok(()) => buf[0],
-                Err(e) => return Err(Error::Read(e)),
-            };
-
-            trace!("state: {:?}, read: {:x}", state, c);
-
-            state = match state {
-                State::Sync1 => {
-                    if c == 0xb5 {
-                        ublox.sync_1 = c;
-                        State::Sync2
-                    } else {
-                        State::Sync1
-                    }
-                }
-
-                State::Sync2 => {
-                    if c == 0x62 {
-                        ublox.sync_2 = c;
-                        State::Class
-                    } else {
-                        error!("bad sync: {:x}", c);
-                        return Err(Error::Parse(state));
-                    }
-                }
-
-                State::Class => {
-                    ublox.class = c;
-                    State::Id
-                }
-
-                State::Id => {
-                    ublox.id = c;
-                    State::LengthLow
-                }
-
-                State::LengthLow => {
-                    ublox.length = u16::from(c);
-                    State::LengthHigh
-                }
-
-                State::LengthHigh => {
-                    ublox.length += u16::from(c * u8::MAX);
-
-                    if ublox.length != 0 {
-                        State::Payload
-                    } else {
-                        State::CheckA
-                    }
-                }
-
-                State::Payload => {
-                    ublox.payload.push(c);
-
-                    if ublox.payload.len() == ublox.length as usize {
-                        State::CheckA
-                    } else {
-                        State::Payload
-                    }
-                }
-
-                State::CheckA => {
-                    ublox.check_a = c;
-                    State::CheckB
-                }
-
-                State::CheckB => {
-                    ublox.check_b += c;
-                    ublox.checksum_validate()?;
-
-                    return Ok(ublox);
+        state = match state {
+            State::Sync1 => {
+                if c == 0xb5 {
+                    self.sync_1 = c;
+                    State::Sync2
+                } else {
+                    error!("bad sync1: {:x}", c);
+                    return Err(Error::Parse(state));
                 }
             }
+
+            State::Sync2 => {
+                if c == 0x62 {
+                    self.sync_2 = c;
+                    State::Class
+                } else {
+                    error!("bad sync2: {:x}", c);
+                    return Err(Error::Parse(state));
+                }
+            }
+
+            State::Class => {
+                self.class = c;
+                State::Id
+            }
+
+            State::Id => {
+                self.id = c;
+                State::LengthLow
+            }
+
+            State::LengthLow => {
+                self.length = u16::from(c);
+                State::LengthHigh
+            }
+
+            State::LengthHigh => {
+                self.length += u16::from(c * u8::MAX);
+
+                if self.length != 0 {
+                    State::Payload
+                } else {
+                    State::CheckA
+                }
+            }
+
+            State::Payload => {
+                self.payload.push(c);
+
+                if self.payload.len() == self.length as usize {
+                    State::CheckA
+                } else {
+                    State::Payload
+                }
+            }
+
+            State::CheckA => {
+                self.check_a = c;
+                State::CheckB
+            }
+
+            State::CheckB => {
+                self.check_b += c;
+                self.checksum_validate()?;
+                State::Done
+            }
+
+            State::Done => State::Done,
+        };
+
+        Ok(state)
+    }
+
+    pub fn from_reader<R: Read>(mut reader: R) -> Result<Self, Error> {
+        let mut state = State::default();
+        let mut buf = vec![0];
+        let mut ublox = Ublox::default();
+
+        while state != State::Done {
+            state = match reader.read_exact(&mut buf) {
+                Ok(()) => ublox.parse_one(state, buf[0])?,
+                Err(e) => return Err(Error::Read(e)),
+            };
         }
+
+        Ok(ublox)
     }
 }
 
