@@ -40,7 +40,7 @@ fn main() -> Result<(), Error> {
                     println!("MGA-ACK: used: {}: {}", ublox.payload[3], count);
                 }
             }
-            id::MGA::DBD => println!("MGA-DBD"),
+            id::MGA::DBD => println!("{:?}", ublox),
             _ => println!("{:x?}", ublox),
         },
 
