@@ -38,7 +38,9 @@ pub struct Ublox {
 }
 
 impl Ublox {
-    pub fn new(class: Class, id: Id, payload: &[u8]) -> Self {
+    pub fn new(id: Id, payload: &[u8]) -> Self {
+        let class = Class::from(id);
+
         let mut s = Self {
             sync_1: 0xb5,
             sync_2: 0x62,
