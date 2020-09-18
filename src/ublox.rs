@@ -17,7 +17,7 @@ pub enum State {
     CheckA,
     CheckB,
     Done,
-    Txt,
+    Txt(char),
 }
 
 impl Default for State {
@@ -142,17 +142,17 @@ impl Ublox {
         trace!("state: {:?}, byte: {:x}", state, c);
 
         state = match state {
-            State::Txt => {
+            State::Txt(_) => {
                 if c == b'\n' {
                     State::Sync1
                 } else {
-                    State::Txt
+                    State::Txt(c as char)
                 }
             }
 
             State::Sync1 => {
-                if c == b'$' {
-                    State::Txt
+                if c == b'$' || c == b'{' || c == b'#' {
+                    State::Txt(c as char)
                 } else if c == 0xb5 {
                     self.sync_1 = c;
                     State::Sync2
