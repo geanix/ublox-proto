@@ -5,6 +5,11 @@ use std::num::Wrapping;
 
 use crate::{Class, Error, Id};
 
+pub enum Frame {
+    Txt(String),
+    Ublox(Ublox),
+}
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum State {
     Sync1,
@@ -226,19 +231,28 @@ impl Ublox {
         Ok(state)
     }
 
-    pub fn from_reader<R: Read>(mut reader: R) -> Result<Self, Error> {
+    pub fn from_reader<R: Read>(mut reader: R) -> Result<Frame, Error> {
         let mut state = State::default();
         let mut buf = vec![0];
         let mut ublox = Ublox::default();
+        let mut txt = String::new();
 
-        while state != State::Done {
+        loop {
             state = match reader.read_exact(&mut buf) {
                 Ok(()) => ublox.parse_one(state, buf[0])?,
                 Err(e) => return Err(Error::Read(e)),
             };
-        }
 
-        Ok(ublox)
+            match state {
+                State::Txt(c) => txt.push(c),
+                State::DoneTxt(c) => {
+                    txt.push(c);
+                    return Ok(Frame::Txt(txt));
+                }
+                State::Done => return Ok(Frame::Ublox(ublox)),
+                _ => {}
+            }
+        }
     }
 }
 
