@@ -3,7 +3,7 @@ use std::fmt;
 
 use crate::Class;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(u8)]
 pub enum Id {
     NAV(NAV),
@@ -89,7 +89,7 @@ impl From<Id> for Class {
     }
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum ACK {
     NAK = 0x00,
@@ -98,7 +98,7 @@ pub enum ACK {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum AID {
     INI = 0x01,
@@ -110,7 +110,7 @@ pub enum AID {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum CFG {
     PRT = 0x00,
@@ -151,7 +151,7 @@ pub enum CFG {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum ESF {
     MEAS = 0x02,
@@ -162,7 +162,7 @@ pub enum ESF {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum HNR {
     PVT = 0x00,
@@ -171,7 +171,7 @@ pub enum HNR {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum INF {
     ERROR = 0x00,
@@ -183,7 +183,7 @@ pub enum INF {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum LOG {
     ERASE = 0x03,
@@ -201,7 +201,7 @@ pub enum LOG {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum MGA {
     GPS = 0x00,
@@ -218,7 +218,7 @@ pub enum MGA {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum MON {
     IO = 0x02,
@@ -237,7 +237,7 @@ pub enum MON {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum NAV {
     POSECEF = 0x01,
@@ -276,7 +276,7 @@ pub enum NAV {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum RXM {
     SFRBX = 0x13,
@@ -291,7 +291,7 @@ pub enum RXM {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum SEC {
     UNIQID = 0x03,
@@ -299,7 +299,7 @@ pub enum SEC {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum TIM {
     TP = 0x01,
@@ -316,7 +316,7 @@ pub enum TIM {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, FromPrimitive)]
+#[derive(Copy, Clone, Debug, FromPrimitive, PartialEq)]
 #[repr(u8)]
 pub enum UPD {
     SOS = 0x14,
