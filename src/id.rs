@@ -45,6 +45,34 @@ impl fmt::Display for Id {
     }
 }
 
+impl From<&Vec<u8>> for Id {
+    fn from(bytes: &Vec<u8>) -> Self {
+        if bytes.len() < 2 {
+            return Id::Unknown;
+        }
+
+        let class = Class::from(bytes[0]);
+
+        match class {
+            Class::NAV => Id::NAV(NAV::from(bytes[1])),
+            Class::RXM => Id::RXM(RXM::from(bytes[1])),
+            Class::INF => Id::INF(INF::from(bytes[1])),
+            Class::ACK => Id::ACK(ACK::from(bytes[1])),
+            Class::CFG => Id::CFG(CFG::from(bytes[1])),
+            Class::UPD => Id::UPD(UPD::from(bytes[1])),
+            Class::MON => Id::MON(MON::from(bytes[1])),
+            Class::AID => Id::AID(AID::from(bytes[1])),
+            Class::TIM => Id::TIM(TIM::from(bytes[1])),
+            Class::ESF => Id::ESF(ESF::from(bytes[1])),
+            Class::MGA => Id::MGA(MGA::from(bytes[1])),
+            Class::LOG => Id::LOG(LOG::from(bytes[1])),
+            Class::SEC => Id::SEC(SEC::from(bytes[1])),
+            Class::HNR => Id::HNR(HNR::from(bytes[1])),
+            Class::Unknown => Id::Unknown,
+        }
+    }
+}
+
 impl From<Id> for u8 {
     fn from(id: Id) -> Self {
         match id {
