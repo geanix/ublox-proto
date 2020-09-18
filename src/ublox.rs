@@ -119,6 +119,24 @@ impl Ublox {
         }
     }
 
+    pub fn bytes(&self) -> Vec<u8> {
+        let len_low = (self.length & 0xff) as u8;
+        let len_high = (self.length >> 8) as u8;
+        let mut v = vec![
+            self.sync_1,
+            self.sync_2,
+            self.class,
+            self.id,
+            len_low,
+            len_high,
+        ];
+
+        v.extend(self.payload.clone());
+        v.extend(&[self.check_a, self.check_b]);
+
+        v
+    }
+
     pub fn parse_one(&mut self, mut state: State, c: u8) -> Result<State, Error> {
         trace!("state: {:?}, byte: {:x}", state, c);
 
