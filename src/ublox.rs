@@ -119,7 +119,7 @@ impl Ublox {
         }
     }
 
-    fn parse_one(&mut self, mut state: State, c: u8) -> Result<State, Error> {
+    pub fn parse_one(&mut self, mut state: State, c: u8) -> Result<State, Error> {
         trace!("state: {:?}, byte: {:x}", state, c);
 
         state = match state {
