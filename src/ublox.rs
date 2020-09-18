@@ -18,6 +18,7 @@ pub enum State {
     CheckB,
     Done,
     Txt(char),
+    DoneTxt(char),
 }
 
 impl Default for State {
@@ -144,7 +145,7 @@ impl Ublox {
         state = match state {
             State::Txt(_) => {
                 if c == b'\n' {
-                    State::Sync1
+                    State::DoneTxt(c as char)
                 } else {
                     State::Txt(c as char)
                 }
@@ -219,6 +220,7 @@ impl Ublox {
             }
 
             State::Done => State::Done,
+            State::DoneTxt(c) => State::DoneTxt(c),
         };
 
         Ok(state)
