@@ -188,7 +188,7 @@ impl Ublox {
             }
 
             State::LengthHigh => {
-                self.length += u16::from(c * u8::MAX);
+                self.length |= (c as u16) << 8;
 
                 if self.length != 0 {
                     State::Payload
