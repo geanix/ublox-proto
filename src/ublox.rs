@@ -84,6 +84,10 @@ impl Ublox {
         }
     }
 
+    pub fn len(&self) -> usize {
+        self.length as usize + 8
+    }
+
     fn checksum(&self) -> (u8, u8) {
         let mut a = Wrapping(0u8);
         let mut b = Wrapping(0u8);
